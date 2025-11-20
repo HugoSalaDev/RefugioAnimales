@@ -1,0 +1,89 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 60px auto;
+        background: white;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .login-title {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 12px;
+        background-color: #0056b3;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+        .btn-login:hover {
+            background-color: #004494;
+        }
+
+    .alert-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 10px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        text-align: left;
+        font-size: 0.9em;
+    }
+</style>
+
+<div class="login-container">
+    <h2 class="login-title">Iniciar Sesión</h2>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert-error">@ViewBag.Error</div>
+    }
+
+    <form asp-action="Login" method="post">
+        <div class="form-group">
+            <label class="form-label">Usuario</label>
+            <input type="text" name="nombreUsuario" class="form-control" required placeholder="Ej: admin" />
+        </div>
+        <div class="form-group">
+            <label class="form-label">Contraseña</label>
+            <input type="password" name="password" class="form-control" required placeholder="••••••" />
+        </div>
+        <button type="submit" class="btn-login">Entrar</button>
+    </form>
+</div>

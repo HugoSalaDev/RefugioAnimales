@@ -1,0 +1,129 @@
+﻿@model RefugioAnimales.Models.ViewModels.AdopcionViewModel
+
+@{
+    ViewData["Title"] = "Adoptar a " + Model.AnimalNombre;
+}
+
+<style>
+    .adopt-container {
+        max-width: 500px;
+        margin: 40px auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .adopt-header {
+        background-color: #28a745; /* Verde */
+        color: white;
+        padding: 20px;
+        text-align: center;
+    }
+
+        .adopt-header h3 {
+            margin: 0;
+            font-weight: 500;
+        }
+
+    .adopt-body {
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1rem;
+        box-sizing: border-box; /* Para que el padding no rompa el ancho */
+    }
+
+    .btn-confirm {
+        width: 100%;
+        background-color: #28a745;
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+        .btn-confirm:hover {
+            background-color: #218838;
+        }
+
+    .btn-cancel {
+        display: block;
+        width: 100%;
+        text-align: center;
+        padding: 10px;
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+    .text-error {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+</style>
+
+<div class="adopt-container">
+    <div class="adopt-header">
+        <h3>Tramitar Adopción: @Model.AnimalNombre</h3>
+    </div>
+    <div class="adopt-body">
+        <p style="color:#666; margin-bottom:20px; text-align:center;">
+            Por favor, selecciona quién adoptará a este animal.
+        </p>
+
+        <form asp-action="Adoptar" method="post">
+            <input type="hidden" asp-for="AnimalId" />
+
+            <div class="form-group">
+                <label class="form-label">Adoptante</label>
+                <select asp-for="AdoptanteId" asp-items="Model.ListaAdoptantes" class="form-input">
+                    <option value="">-- Seleccione un adoptante --</option>
+                </select>
+                <span asp-validation-for="AdoptanteId" class="text-error"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Fecha de Adopción</label>
+                <input asp-for="FechaAdopcion" class="form-input" type="date" />
+                <span asp-validation-for="FechaAdopcion" class="text-error"></span>
+            </div>
+
+            <button type="submit" class="btn-confirm">✅ Confirmar Adopción</button>
+            <a asp-action="Detalle" asp-route-id="@Model.AnimalId" class="btn-cancel">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

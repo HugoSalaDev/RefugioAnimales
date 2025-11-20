@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using RefugioAnimales.Data;
 using RefugioAnimales.Models;
-using Microsoft.EntityFrameworkCore;
+using RefugioAnimales.Models.ViewModels;
 using System.IO;
 
 namespace RefugioAnimales.Controllers
@@ -63,6 +65,11 @@ namespace RefugioAnimales.Controllers
         [HttpGet]
         public IActionResult Crear()
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             return View();
         }
 
@@ -75,6 +82,12 @@ namespace RefugioAnimales.Controllers
         [RequestFormLimits(MultipartBodyLengthLimit = 104857600)]
         public async Task<IActionResult> Crear(Animal animal, IFormFile? foto)
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             // Quito la validación de adoptante y fechas porque son opcionales
             ModelState.Remove("Adoptante");
             ModelState.Remove("FechaAdopcion");
@@ -161,6 +174,12 @@ namespace RefugioAnimales.Controllers
         [HttpGet]
         public async Task<IActionResult> Editar(int id)
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var animal = await _context.Animales.FindAsync(id);
 
             if (animal == null)
@@ -178,6 +197,12 @@ namespace RefugioAnimales.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar(int id, Animal animal, IFormFile? foto)
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (id != animal.Id)
             {
                 return RedirectToAction("Animales");
@@ -242,6 +267,12 @@ namespace RefugioAnimales.Controllers
         [HttpGet]
         public async Task<IActionResult> Eliminar(int id)
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var animal = await _context.Animales
                 .Include(a => a.Adoptante)
                 .FirstOrDefaultAsync(a => a.Id == id);
@@ -261,6 +292,12 @@ namespace RefugioAnimales.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EliminarConfirmado(int id)
         {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var animal = await _context.Animales.FindAsync(id);
 
             if (animal != null)
@@ -295,6 +332,113 @@ namespace RefugioAnimales.Controllers
         private async Task<bool> AnimalExiste(int id)
         {
             return await _context.Animales.AnyAsync(e => e.Id == id);
+        }
+
+        // ========================================
+        // ADOPTAR - GET
+        // ========================================
+        [HttpGet]
+        public async Task<IActionResult> Adoptar(int id)
+        {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var animal = await _context.Animales.FindAsync(id);
+            if (animal == null) return NotFound();
+
+            if (animal.Estado == "Adoptado")
+            {
+                return RedirectToAction("Detalle", new { id = animal.Id });
+            }
+
+            // Cear el ViewModel con los datos necesarios
+            var viewModel = new AdopcionViewModel
+            {
+                AnimalId = animal.Id,
+                AnimalNombre = animal.Nombre,
+                FechaAdopcion = DateTime.Now,
+                // Cargamos la lista aquí, tipada fuertemente
+                ListaAdoptantes = await _context.Adoptantes
+                    .Select(a => new SelectListItem
+                    {
+                        Value = a.Id.ToString(),
+                        Text = a.Nombre
+                    })
+                    .ToListAsync()
+            };
+
+            return View(viewModel);
+        }
+
+        // ========================================
+        // ADOPTAR - POST (Recibe el ViewModel)
+        // ========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Adoptar(AdopcionViewModel model)
+        {
+            // Comprobar si hay sesión
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var animal = await _context.Animales.FindAsync(model.AnimalId);
+                if (animal == null) return NotFound();
+
+                // Actualizamos la entidad Animal con los datos del ViewModel
+                animal.AdoptanteId = model.AdoptanteId;
+                animal.FechaAdopcion = model.FechaAdopcion;
+                animal.Estado = "Adoptado";
+
+                _context.Update(animal);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction("Detalle", new { id = animal.Id });
+            }
+
+            // Si hay error (ej: no seleccionó adoptante), recargamos la lista
+            // porque el protocolo HTTP no guarda el estado de la lista
+            model.ListaAdoptantes = await _context.Adoptantes
+                .Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Nombre
+                })
+                .ToListAsync();
+
+            return View(model);
+        }
+        // ========================================
+        // DESADOPTAR (Liberar animal)
+        // ========================================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Desadoptar(int id)
+        {
+            // SEGURIDAD: Solo usuarios logueados
+            if (HttpContext.Session.GetString("UsuarioId") == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var animal = await _context.Animales.FindAsync(id);
+            if (animal == null) return NotFound();
+
+            // Restablecer valores para liberar al animal
+            animal.AdoptanteId = null;
+            animal.FechaAdopcion = null;
+            animal.Estado = "Disponible";
+
+            _context.Update(animal);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Detalle", new { id = animal.Id });
         }
     }
 }

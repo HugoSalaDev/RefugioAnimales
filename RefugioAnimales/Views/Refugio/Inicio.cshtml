@@ -2,67 +2,191 @@
     ViewData["Title"] = "Inicio";
 }
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <style>
-        /* Fondo gris suave para toda la página */
-        body {
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
+<style>
+    /* Hero Section (Banner) */
+    .hero-banner {
+        background: linear-gradient(to right, #eef2f3, #8e9eab);
+        padding: 60px 20px;
+        text-align: center;
+        border-radius: 8px;
+        margin-bottom: 40px;
+        color: #333;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+        margin: 0 0 15px 0;
+        color: #2c3e50;
+    }
+
+    .hero-subtitle {
+        font-size: 1.2rem;
+        color: #555;
+        max-width: 600px;
+        margin: 0 auto 30px auto;
+        line-height: 1.5;
+    }
+
+    .btn-hero {
+        background-color: #4a5568;
+        color: white;
+        padding: 12px 24px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 1.1rem;
+        display: inline-block;
+        transition: background-color 0.3s;
+    }
+
+        .btn-hero:hover {
+            background-color: #2d3748;
         }
 
-        /* Contenedor blanco centrado */
-        .container {
-            background: white;
-            padding: 60px 40px;
-            border-radius: 8px;
-            max-width: 480px;
-            text-align: center;
+    /* Sección de Información (2 columnas) */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 60px;
+    }
+
+    .info-box {
+        padding: 40px;
+        border-radius: 8px;
+    }
+
+    .box-dark {
+        background-color: #2d3748;
+        color: white;
+    }
+
+    .box-light {
+        background-color: white;
+        border: 1px solid #e2e8f0;
+        color: #333;
+    }
+
+    .btn-outline-white {
+        border: 1px solid white;
+        color: white;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+        .btn-outline-white:hover {
+            background-color: rgba(255,255,255,0.1);
         }
 
-        /* Título principal */
-        h1 {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 16px;
-            font-weight: 500;
-        }
+    /* Grid de Animales Destacados */
+    .section-title {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
 
-        /* Texto de bienvenida */
-        p {
-            color: #666;
-            font-size: 1em;
-            margin-bottom: 32px;
-        }
+    .animals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
 
-        /* Botón para ver animales */
-        .btn {
-            display: inline-block;
+    .animal-card {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .animal-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        background-color: #ddd;
+    }
+
+    .animal-body {
+        padding: 20px;
+        flex: 1;
+    }
+
+    .animal-name {
+        margin: 0 0 10px 0;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .btn-card {
+        display: inline-block;
+        border: 1px solid #4a5568;
+        color: #4a5568;
+        padding: 6px 12px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+
+        .btn-card:hover {
             background-color: #4a5568;
             color: white;
-            padding: 12px 32px;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.95em;
         }
 
-            /* Hover del botón */
-            .btn:hover {
-                background-color: #2d3748;
-            }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Refugio de Animales</h1>
-        <p>Bienvenido al refugio. Aquí puedes ver los animales disponibles para adopción.</p>
-        <!-- Enlace que va a la acción Animales del controlador Refugio -->
-        <a asp-controller="Refugio" asp-action="Animales" class="btn">Ver animales</a>
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="hero-banner">
+    <h1 class="hero-title">Bienvenido al Refugio</h1>
+    <p class="hero-subtitle">
+        Donde las segundas oportunidades comienzan. <br />
+        Ayúdanos a encontrar un hogar lleno de amor para cada uno de nuestros amigos.
+    </p>
+    <a asp-controller="Refugio" asp-action="Animales" class="btn-hero">
+        Ver Animales en Adopción
+    </a>
+</div>
+
+<div class="info-grid">
+    <div class="info-box box-dark">
+        <h2 style="margin-top:0;">¿Cómo Adoptar?</h2>
+        <p>Es muy sencillo. Revisa nuestro catálogo, elige a tu compañero ideal y completa el formulario. Nosotros nos encargamos del resto.</p>
+        <a asp-controller="Refugio" asp-action="Animales" class="btn-outline-white">Ver Catálogo</a>
     </div>
-</body>
-</html>
+    <div class="info-box box-light">
+        <h2 style="margin-top:0;">Dona o Colabora</h2>
+        <p>Si no puedes adoptar, ¡no te preocupes! Aceptamos donaciones de alimentos, juguetes y tiempo.</p>
+        <button style="background: #eee; border:none; padding: 8px 16px; border-radius: 4px; color: #888; cursor: not-allowed;">Próximamente</button>
+    </div>
+</div>
+
+<div>
+    <h3 class="section-title">Nuestros Amigos Esperándote</h3>
+    <div class="animals-grid">
+        @for (int i = 1; i <= 3; i++)
+        {
+            <div class="animal-card">
+                <img src="@Url.Action("ObtenerImagen", "Refugio", new { id = i })"
+                     class="animal-img"
+                     alt="Animal"
+                     onerror="this.src='https://via.placeholder.com/400x300/e5e5e5/999?text=Sin+Foto'">
+                <div class="animal-body">
+                    <h4 class="animal-name">Conóceme</h4>
+                    <p style="color:#666; font-size:0.9rem;">¿Seré tu nuevo amigo?</p>
+                    <a asp-controller="Refugio" asp-action="Detalle" asp-route-id="@i" class="btn-card">Ver Detalles</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

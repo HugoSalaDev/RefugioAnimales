@@ -1,0 +1,148 @@
+﻿@model IEnumerable<RefugioAnimales.Models.Adoptante>
+
+@{
+    ViewData["Title"] = "Adoptantes";
+}
+
+<style>
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap; /* Para que el botón baje en móvil */
+        gap: 10px;
+    }
+
+    .page-title {
+        margin: 0;
+        color: #333;
+    }
+
+    .btn-new {
+        background-color: #4a5568;
+        color: white;
+        padding: 10px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        white-space: nowrap; /* Que el texto no se parta */
+        font-size: 0.95rem;
+    }
+
+        .btn-new:hover {
+            background-color: #2d3748;
+        }
+
+    /* Contenedor de la tabla */
+    .table-container {
+        background: white;
+        padding: 0; /* Quitamos padding para aprovechar espacio */
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        overflow: hidden; /* Para bordes redondeados */
+    }
+
+    /* Scroll horizontal para móviles */
+    .table-scroll {
+        overflow-x: auto;
+        width: 100%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px; /* Fuerza ancho mínimo para activar scroll */
+    }
+
+    th {
+        background-color: #f8f9fa;
+        text-align: left;
+        padding: 15px;
+        border-bottom: 2px solid #dee2e6;
+        color: #495057;
+        font-weight: 600;
+    }
+
+    td {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        color: #444;
+        vertical-align: middle;
+    }
+
+    .actions-cell {
+        white-space: nowrap; /* Botones en una línea */
+    }
+
+    .btn-action {
+        text-decoration: none;
+        color: #0056b3;
+        margin-right: 8px;
+        font-size: 0.9rem;
+    }
+
+        .btn-action:hover {
+            text-decoration: underline;
+        }
+
+    .btn-danger-link {
+        color: #dc3545;
+    }
+
+    /* Ajustes Responsive */
+    @@media (max-width: 600px) {
+    .page-header{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-new {
+        width: 100%;
+        text-align: center;
+    }
+
+    /* En móvil la tabla tendrá scroll, pero quitamos padding extra */
+    .table-container {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title">Gestión de Adoptantes</h1>
+    <a asp-action="Crear" class="btn-new">+ Nuevo Adoptante</a>
+</div>
+
+<div class="table-container">
+    <div class="table-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Fecha Alta</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><strong>@item.Nombre</strong></td>
+                        <td>@item.Email</td>
+                        <td>@item.Telefono</td>
+                        <td>@item.FechaAlta.ToShortDateString()</td>
+                        <td class="actions-cell">
+                            <a asp-action="Editar" asp-route-id="@item.Id" class="btn-action">Editar</a>
+                            <a asp-action="Detalle" asp-route-id="@item.Id" class="btn-action">Detalle</a>
+                            <a asp-action="Eliminar" asp-route-id="@item.Id" class="btn-action btn-danger-link">Eliminar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

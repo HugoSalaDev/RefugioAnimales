@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Añadir servicios MVC
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddHttpContextAccessor();
+
 // Configurar la base de datos con SQL Server LocalDB
 builder.Services.AddDbContext<RefugioContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

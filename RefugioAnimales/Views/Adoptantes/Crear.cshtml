@@ -1,0 +1,83 @@
+﻿@model RefugioAnimales.Models.Adoptante
+
+@{
+    ViewData["Title"] = "Crear Adoptante";
+}
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 20px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .btn-save {
+        background-color: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85em;
+    }
+</style>
+
+<h2>Registrar Nuevo Adoptante</h2>
+<hr />
+
+<div class="form-container">
+    <form asp-action="Crear">
+        <div class="form-group">
+            <label class="form-label">Nombre Completo</label>
+            <input asp-for="Nombre" class="form-input" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input asp-for="Email" class="form-input" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Teléfono</label>
+            <input asp-for="Telefono" class="form-input" />
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+
+        <div style="margin-top: 20px;">
+            <input type="submit" value="Guardar" class="btn-save" />
+            <a asp-action="Index" style="margin-left: 10px; color: #666; text-decoration: none;">Volver</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}

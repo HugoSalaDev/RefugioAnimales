@@ -1,14 +1,202 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Refugio de Animales</title>
-    <!-- Cargo el CSS global -->
+
     <link rel="stylesheet" href="~/css/site.css" />
+
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: #f9f9f9;
+        }
+
+        /* Barra de Navegación */
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0 20px;
+            position: sticky; /* Menú fijo arriba */
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: 60px; /* Altura mínima en vez de fija */
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap; /* Permite que baje de línea si no cabe */
+            padding: 10px 0;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+            .nav-links a {
+                text-decoration: none;
+                color: #555;
+                font-weight: 500;
+                font-size: 1rem;
+                transition: color 0.2s;
+            }
+
+                .nav-links a:hover {
+                    color: #000;
+                }
+
+        .nav-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* --- RESPONSIVE (MÓVIL) --- */
+        @@media (max-width: 768px) {
+        nav{
+            flex-direction: column; /* Cambia a vertical */
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-left {
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .nav-links {
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            text-align: center;
+        }
+
+            .nav-links li {
+                width: 100%;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 5px;
+            }
+
+        .nav-right {
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        }
+
+        /* Contenedor principal */
+        .main-container {
+            flex: 1;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        footer {
+            background-color: #fff;
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #e9ecef;
+            color: #6c757d;
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #d9534f;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <!-- Aquí se renderiza el contenido de cada vista -->
-    @RenderBody()
+    <header>
+        <nav>
+            <div class="nav-left">
+                <a class="nav-brand" asp-controller="Refugio" asp-action="Inicio">Refugio</a>
+                <ul class="nav-links">
+                    <li><a asp-controller="Refugio" asp-action="Inicio">Inicio</a></li>
+                    <li><a asp-controller="Refugio" asp-action="Animales">Animales</a></li>
+
+                    @{
+                        var usuarioId = HttpContextAccessor.HttpContext?.Session.GetString("UsuarioId");
+                        var nombreUsuario = HttpContextAccessor.HttpContext?.Session.GetString("NombreUsuario");
+                    }
+
+                    @if (usuarioId != null)
+                    {
+                        <li><a asp-controller="Adoptantes" asp-action="Index">Adoptantes</a></li>
+                    }
+                </ul>
+            </div>
+
+            <div class="nav-right">
+                @if (usuarioId != null)
+                {
+                    <span style="color: #333;">Hola, <strong>@nombreUsuario</strong></span>
+                    <a class="nav-links" style="color: #d9534f;" asp-controller="Account" asp-action="Logout">Cerrar Sesión</a>
+                }
+                else
+                {
+                    <a class="nav-links" style="color: #0056b3;" asp-controller="Account" asp-action="Login">Iniciar Sesión</a>
+                }
+            </div>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer>
+        &copy; 2025 - Refugio de Animales - Tarea 3
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
