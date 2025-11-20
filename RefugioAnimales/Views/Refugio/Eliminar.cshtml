@@ -1,0 +1,181 @@
+﻿@model RefugioAnimales.Models.Animal
+
+@{
+    ViewData["Title"] = $"Eliminar - {Model.Nombre}";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #4a5568;
+            text-decoration: none;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+        }
+
+            .back-link:hover {
+                color: #2d3748;
+            }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 4px;
+        }
+
+        .warning {
+            background-color: #fff4e6;
+            border-left: 4px solid #c87000;
+            padding: 16px;
+            margin-bottom: 24px;
+            border-radius: 4px;
+        }
+
+            .warning h2 {
+                color: #c87000;
+                font-size: 1.3em;
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
+            .warning p {
+                color: #856404;
+                margin: 0;
+            }
+
+        .animal-details {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 24px;
+        }
+
+        .animal-image {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 16px;
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: #333;
+            width: 120px;
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95em;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-danger {
+            background-color: #c5221f;
+            color: white;
+        }
+
+            .btn-danger:hover {
+                background-color: #a01d1a;
+            }
+
+        .btn-secondary {
+            background-color: #e5e5e5;
+            color: #333;
+        }
+
+            .btn-secondary:hover {
+                background-color: #d5d5d5;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a asp-controller="Refugio" asp-action="Animales" class="back-link">← Volver al listado</a>
+
+        <div class="card">
+            <div class="warning">
+                <h2>⚠️ Confirmar Eliminación</h2>
+                <p>¿Estás seguro de que deseas eliminar este animal? Esta acción no se puede deshacer.</p>
+            </div>
+
+            <div class="animal-details">
+                @if (Model.FotoContenido != null)
+                {
+                    <img src="@Url.Action("ObtenerImagen", "Refugio", new { id = Model.Id })"
+                         alt="@Model.Nombre"
+                         class="animal-image" />
+                }
+
+                <div class="detail-row">
+                    <span class="detail-label">Nombre:</span>
+                    <span class="detail-value">@Model.Nombre</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Especie:</span>
+                    <span class="detail-value">@Model.Especie</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Edad:</span>
+                    <span class="detail-value">@Model.Edad año(s)</span>
+                </div>
+
+                <div class="detail-row">
+                    <span class="detail-label">Estado:</span>
+                    <span class="detail-value">@Model.Estado</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Descripcion))
+                {
+                    <div class="detail-row">
+                        <span class="detail-label">Descripción:</span>
+                        <span class="detail-value">@Model.Descripcion</span>
+                    </div>
+                }
+            </div>
+
+            <form asp-action="Eliminar" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div class="buttons">
+                    <button type="submit" class="btn btn-danger">Sí, Eliminar</button>
+                    <a asp-controller="Refugio" asp-action="Animales" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

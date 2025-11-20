@@ -1,0 +1,195 @@
+﻿@model RefugioAnimales.Models.Animal
+
+@{
+    ViewData["Title"] = "Crear Animal";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-block;
+            color: #4a5568;
+            text-decoration: none;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+        }
+
+            .back-link:hover {
+                color: #2d3748;
+            }
+
+        .card {
+            background: white;
+            padding: 32px;
+            border-radius: 4px;
+        }
+
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.95em;
+            font-family: inherit;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+                outline: none;
+                border-color: #4a5568;
+            }
+
+        .error {
+            color: #c5221f;
+            font-size: 0.85em;
+            margin-top: 4px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95em;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #4a5568;
+            color: white;
+        }
+
+            .btn-primary:hover {
+                background-color: #2d3748;
+            }
+
+        .btn-secondary {
+            background-color: #e5e5e5;
+            color: #333;
+        }
+
+            .btn-secondary:hover {
+                background-color: #d5d5d5;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a asp-controller="Refugio" asp-action="Animales" class="back-link">← Volver al listado</a>
+
+        <div class="card">
+            <h1>Crear Nuevo Animal</h1>
+
+            <form asp-action="Crear" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="Nombre"></label>
+                    <input asp-for="Nombre" type="text" placeholder="Ej: Luna" />
+                    <span asp-validation-for="Nombre" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Especie"></label>
+                    <select asp-for="Especie">
+                        <option value="">Selecciona una especie</option>
+                        <option value="Perro">Perro</option>
+                        <option value="Gato">Gato</option>
+                        <option value="Conejo">Conejo</option>
+                        <option value="Hámster">Hámster</option>
+                        <option value="Ave">Ave</option>
+                        <option value="Otro">Otro</option>
+                    </select>
+                    <span asp-validation-for="Especie" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Edad">Edad (años)</label>
+                    <input asp-for="Edad" type="number" min="0" max="30" />
+                    <span asp-validation-for="Edad" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Estado"></label>
+                    <select asp-for="Estado">
+                        <option value="Disponible">Disponible</option>
+                        <option value="En tratamiento">En tratamiento</option>
+                        <option value="Adoptado">Adoptado</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Descripcion">Descripción</label>
+                    <textarea asp-for="Descripcion" placeholder="Describe el temperamento y características del animal"></textarea>
+                    <span asp-validation-for="Descripcion" class="error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="foto">Foto del animal</label>
+                    <input type="file" id="foto" name="foto">
+                </div>
+
+                <div class="buttons">
+                    <button type="submit" class="btn btn-primary">Guardar Animal</button>
+                    <a asp-controller="Refugio" asp-action="Animales" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

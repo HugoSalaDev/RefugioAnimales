@@ -1,0 +1,251 @@
+﻿@model List<RefugioAnimales.Models.Animal>
+
+@{
+    ViewData["Title"] = "Animales";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <style>
+        /* Fondo gris suave */
+        body {
+            background-color: #f5f5f5;
+            padding: 40px 20px;
+        }
+
+        /* Contenedor principal con ancho máximo */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* Header con botones */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        /* Enlace para volver al inicio */
+        .back-link {
+            display: inline-block;
+            color: #4a5568;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+            .back-link:hover {
+                color: #2d3748;
+            }
+
+        /* Botón para crear nuevo animal */
+        .btn-crear {
+            background-color: #4a5568;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+            .btn-crear:hover {
+                background-color: #2d3748;
+            }
+
+        /* Título de la página */
+        h1 {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* Subtítulo descriptivo */
+        .subtitle {
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Grid responsive para las tarjetas de animales */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        /* Tarjeta individual de cada animal */
+        .card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+            .card:hover {
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            }
+
+        /* Imagen del animal en la tarjeta */
+        .card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background-color: #e5e5e5;
+        }
+
+        /* Contenido de la tarjeta */
+        .card-content {
+            padding: 16px;
+        }
+
+        /* Nombre del animal */
+        .name {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* Detalles del animal */
+        .detail {
+            color: #666;
+            font-size: 0.9em;
+            margin: 4px 0;
+        }
+
+        /* Badge del estado */
+        .estado {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 0.85em;
+            margin-top: 8px;
+        }
+
+        .disponible {
+            background-color: #e6f4ea;
+            color: #1e7e34;
+        }
+
+        .adoptado {
+            background-color: #fff4e6;
+            color: #c87000;
+        }
+
+        .tratamiento {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* Botones de acción */
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85em;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-ver {
+            background-color: #4a5568;
+            color: white;
+        }
+
+            .btn-ver:hover {
+                background-color: #2d3748;
+            }
+
+        .btn-editar {
+            background-color: #e6f4ea;
+            color: #1e7e34;
+        }
+
+            .btn-editar:hover {
+                background-color: #d4edda;
+            }
+
+        .btn-eliminar {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+            .btn-eliminar:hover {
+                background-color: #f8d7da;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a asp-controller="Refugio" asp-action="Inicio" class="back-link">← Inicio</a>
+            <a asp-controller="Refugio" asp-action="Crear" class="btn-crear">+ Nuevo Animal</a>
+        </div>
+
+        <h1>Nuestros Animales</h1>
+        <p class="subtitle">Animales disponibles en el refugio</p>
+
+        <div class="grid">
+            @foreach (var animal in Model)
+            {
+                <div class="card">
+                    @* Imagen del animal *@
+                    @if (animal.FotoContenido != null)
+                    {
+                        <img src="@Url.Action("ObtenerImagen", "Refugio", new { id = animal.Id })"
+                             alt="@animal.Nombre"
+                             class="card-image">
+                    }
+                    else
+                    {
+                        <div class="card-image" style="display: flex; align-items: center; justify-content: center; color: #999;">
+                            Sin imagen
+                        </div>
+                    }
+
+                    <div class="card-content">
+                        <div class="name">@animal.Nombre</div>
+                        <div class="detail">@animal.Especie, @animal.Edad año(s)</div>
+
+                        @* Estado con color *@
+                        @if (animal.Estado == "Disponible")
+                        {
+                            <span class="estado disponible">@animal.Estado</span>
+                        }
+                        else if (animal.Estado == "Adoptado")
+                        {
+                            <span class="estado adoptado">@animal.Estado</span>
+                        }
+                        else
+                        {
+                            <span class="estado tratamiento">@animal.Estado</span>
+                        }
+
+                        @* Botones de acción *@
+                        <div class="actions">
+                            <a asp-controller="Refugio" asp-action="Detalle" asp-route-id="@animal.Id" class="btn btn-ver">
+                                Ver
+                            </a>
+                            <a asp-controller="Refugio" asp-action="Editar" asp-route-id="@animal.Id" class="btn btn-editar">
+                                Editar
+                            </a>
+                            <a asp-controller="Refugio" asp-action="Eliminar" asp-route-id="@animal.Id" class="btn btn-eliminar">
+                                Eliminar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</body>
+</html>
